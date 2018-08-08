@@ -7,7 +7,16 @@ Vue.use(VueResource)
 
 export default new Vuex.Store({
     state: {
-        all_items: []
+        all_items: [],
+        resource_type: {
+            5: "course",
+            6: "professor",
+            2: "course_leaf",
+            3: "course_leaf",
+            9: "course_leaf",
+            7: "course_leaf"
+        },
+        search_query: ""
     },
     actions: {
         loadAllItems({ commit }) {
@@ -22,6 +31,9 @@ export default new Vuex.Store({
     mutations: {
         SET_ITEMS(state, data) {
             state.all_items = data;
+        },
+        SET_QUERY(state, data) {
+            state.search_query = data;
         }
     }
 });

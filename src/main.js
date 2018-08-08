@@ -6,7 +6,7 @@ import Vuex from 'vuex'
 import store from './store/store'
 import router from './router/router'
 import VueTreeNavigation from 'vue-tree-navigation';
-
+import 'vue-awesome/icons'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'

@@ -26,16 +26,29 @@ export default {
 
 .fade-enter-active, .fade-leave-active {
     transition-property: opacity;
-    transition-duration: 2s;
+    transition-duration: .10s;
 }
 
 .fade-enter-active {
-    transition-delay: 2s;
+    transition-delay: .10s;
 }
 
 .fade-enter, .fade-leave-active {
-    opacity: 0
+    opacity: 0;
 }
+
+.slide-fade-enter-active {
+  transition: all .05s ease;
+}
+.slide-fade-leave-active {
+  transition: all .05s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-fade-enter, .slide-fade-leave-to
+/* .slide-fade-leave-active below version 2.1.8 */ {
+  transform: translateX(10px);
+  opacity: 0;
+}
+
 .NavigationLevel__children {
     padding-left: 10px;
 }
@@ -56,5 +69,9 @@ export default {
 
 .NavigationToggle__icon {
     border-color: #42b883;
+}
+
+.TreeNavigation {
+    text-align: left;
 }
 </style>

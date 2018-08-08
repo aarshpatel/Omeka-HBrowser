@@ -2,13 +2,16 @@
     <div>
         <b-input-group>
             <h2 id="headline"> Omeka Hierarchical Browser </h2>
-            <b-form-input id="search-box" type="text" placeholder="Enter Search Query" v-model.trim="search_query"></b-form-input>
+            <b-form-input id="search-box" type="text" placeholder="Enter Search Query" v-model="search_query"></b-form-input>
         </b-input-group>
 
         <div id="search-results" v-if="search_query">
             <b-list-group>
                 <b-list-group-item v-for="result in filteredSearchResults">
                     <router-link :to="{name: 'hbrowser', params: {type: resource_type[result['o:resource_template']['o:id']], id: result['o:id']}}">
+                        <icon name="user" scale=".9" v-if="resource_type[result['o:resource_template']['o:id']] == 'professor'"></icon> 
+                        <icon name="file" scale=".9" v-if="resource_type[result['o:resource_template']['o:id']] == 'course_leaf'"></icon> 
+                        <icon name="chalkboard" scale=".9" v-if="resource_type[result['o:resource_template']['o:id']] == 'course'"></icon> 
                         {{ result["dcterms:title"][0]["@value"] }}
                     </router-link>
                 </b-list-group-item>
@@ -19,12 +22,13 @@
 
 
 <script>
-import {mapGetters, mapState} from 'vuex' 
+import {mapGetters, mapState} from 'vuex'
+import Icon from 'vue-awesome/components/Icon'
+
 
 export default {
     name: "Search",
     data: () => ({
-        search_query: "",
         resource_templates: {
             5: "Course",
             6: "Professor",
@@ -32,17 +36,11 @@ export default {
             3: "Syllabus",
             9: "Final Report",
             7: "Course Media"
-        },
-        resource_type: {
-            5: "course",
-            6: "professor",
-            2: "course_leaf",
-            3: "course_leaf",
-            9: "course_leaf",
-            7: "course_leaf"
         }
     }),
-
+    components: {
+        Icon
+    },
     mounted() {
         this.$store.dispatch('loadAllItems') // call the loadAllItems action in the Vuex Store
     },
@@ -50,7 +48,8 @@ export default {
     },
     computed: {
         ...mapState([
-            'all_items'
+            'all_items',
+            'resource_type',
         ]),
         filteredSearchResults () {
             // filters for search results based on the query. Also we want to filter for only courses/professors/course leaf items
@@ -67,6 +66,14 @@ export default {
                 }
                 else return false;
             });
+        },
+        search_query: {
+            get () {
+                return this.$store.state.search_query
+            },
+            set (value) {
+                this.$store.commit('SET_QUERY', value)
+            }
         }
     }
 }
