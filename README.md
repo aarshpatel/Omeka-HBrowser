@@ -1,4 +1,4 @@
-# omeka-hbrowser
+# omeka-hbrowser (using Vue.js)
 
 ## Project setup
 ```
