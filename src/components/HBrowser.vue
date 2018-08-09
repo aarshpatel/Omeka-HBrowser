@@ -1,13 +1,12 @@
 <template>
     <div>
-
         <b-row>
-            <b-col cols="9">
+            <b-col cols="7">
                 <h2 id="headline"> Omeka Hierarchical Browser </h2>
             </b-col>
-
+            <b-col cols="2"></b-col>
             <b-col cols="3">
-                <b-button size="sm" variant="secondary" :to="{ name: 'search' }">Search Again</b-button>
+                <b-button size="sm" variant="primary" :to="{ name: 'search' }"> <icon name="search" scale=".9"></icon> Search Again</b-button>
             </b-col>
         </b-row>
 
@@ -17,7 +16,6 @@
             </b-col>
 
             <b-col cols="7">
-
                 <div v-if="$route.params.type == 'course'">
                     <course v-bind:course_data="getCurrentItem"></course>
                 </div>
@@ -45,6 +43,7 @@ import CourseLeaf from './CourseLeaf.vue'
 import Sidebar from './Sidebar.vue'
 import Search from './Search.vue'
 import Institution from './Institution.vue'
+import Icon from 'vue-awesome/components/Icon'
 
 export default {
     name: "HBrowser",
@@ -54,7 +53,8 @@ export default {
         'courseleaf': CourseLeaf,
         'sidebar': Sidebar,
         'search': Search,
-        'institution': Institution
+        'institution': Institution,
+        'Icon': Icon
     },
     data: () => ({
     }),
@@ -72,7 +72,6 @@ export default {
             for(var idx in this.all_items) {
                 if(Number(this.all_items[idx]["o:id"]) == Number(this.$route.params.id)) {
                     currentItem = this.all_items[idx];
-                    console.log("Current Item: ", currentItem);
                     break;
                 }
             }

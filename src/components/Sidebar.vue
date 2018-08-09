@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import {mapState} from 'vuex' 
+import {mapState} from 'vuex'
 
 export default {
     name: "Sidebar",
@@ -20,24 +20,36 @@ export default {
                   { name: 'Eric Poehler', route: 'hbrowser/professor/60' },                // /about/contact/phone
                 ]},
               ]},
-        ], 
+        ],
     }),
     methods: {
+        // TODO: make sure the hierarchy path is falls through (for example: Art should only contain professors in Umass Amherst in the art department there. It shouldn't contain all professors in the art department across the database)
         findDepartmentsInInstition(institution) {
-            // TODO:
+            var deps =  this.all_items.filter(element => {
+                if("HERO_:DepartmentName" in element) {
+                    if("HERO_:University" in element && element["HERO_:University"][0]["value_resource_id"] == institution) {
+                        return true;
+                    }
+                    if("HERO_:College" in element && element["HERO_:College"][0]["value_resource_id"] == institution) {
+                        return true;
+                    }
+                }
+                return false;
+            }).map(course => {
+                return {"name": course["HERO_:DepartmentName"][0]["@value"], children: this.findProfessorInDepartment(course["HERO_:DepartmentName"][0]["@value"])}
+            });
+
+            var sortedDeps = this.sortByName(deps);
+            var removedDuplicateItems = this.removeDuplicateItems(sortedDeps);
+            console.log(removedDuplicateItems);
+            return removedDuplicateItems;
         },
 
-        findProfessorInInstitution(institution) {
+        findProfessorInDepartment(department_name) {
             return this.all_items.filter(element => {
                 if(element["o:resource_template"] !== null && element["o:resource_template"]["o:id"] == 6) {
-                    if("HERO_:University" in element) {
-                        if(Number(element["HERO_:University"][0]["value_resource_id"]) == institution) {
-                            return true;
-                        }
-                    }
-
-                    if("HERO_:College" in element) {
-                        if(Number(element["HERO_:College"][0]["value_resource_id"]) == institution) {
+                    if("HERO_:DepartmentName" in element) {
+                        if(String(element["HERO_:DepartmentName"][0]["@value"]) == department_name) {
                             return true;
                         }
                     }
@@ -58,7 +70,7 @@ export default {
                     }
                 }
                 return false;
-            }).map(course => { 
+            }).map(course => {
                 return {"name": course["dcterms:title"][0]["@value"], "id": course["o:id"], "route": "hbrowser/course/" + String(course["o:id"]), children: this.findCourseLeafItems(course["o:id"])}
             });
         },
@@ -72,8 +84,29 @@ export default {
                }
                return false
             }).map(leaf_item => {
-                return {"name": leaf_item["dcterms:title"][0]["@value"], "id": leaf_item["o:id"], "route": "hbrowser/course_leaf/" + String(leaf_item["o:id"])} 
+                return {"name": leaf_item["dcterms:title"][0]["@value"], "id": leaf_item["o:id"], "route": "hbrowser/course_leaf/" + String(leaf_item["o:id"])}
             });
+        },
+        sortByName(items) {
+            return items.sort(function(a, b) {
+                var nameA = a["name"].toLowerCase();
+                var nameB = b["name"].toLowerCase();
+                if(nameA < nameB) return -1;
+                if(nameA > nameB) return 1;
+                return 0
+            });
+        },
+        removeDuplicateItems(items) {
+            var names = [];
+            var newItems = [];
+            for(var idx in items) {
+                name = items[idx]["name"];
+                if(!(names.includes(name))) {
+                    names.push(name);
+                    newItems.push(items[idx]);
+                }
+            }
+            return newItems;
         }
     },
     computed: {
@@ -87,7 +120,7 @@ export default {
                     if(element["o:item_set"][0]["o:id"] == 7) {
                         return true;
                     }
-                } 
+                }
                 return false;
             });
         },
@@ -99,7 +132,7 @@ export default {
 
             var institutions_with_professors = institutions.map(element => {
                 var o = Object.assign({}, element);
-                o.children = [{"name": "Professors", "children": this.findProfessorInInstitution(element["id"])}];
+                o.children = [{"name": "Departments", "children": this.findDepartmentsInInstition(element["id"])}];
                 return o;
             });
 

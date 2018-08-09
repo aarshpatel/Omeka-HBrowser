@@ -2,23 +2,28 @@
     <div>
         <div id="professor-content">
             <h3> {{ professor_data["dcterms:title"][0]["@value"] }} </h3>
-            <span> <strong>Department</strong>: {{ professor_data["HERO_:DepartmentName"][0]["@value"] }} </span> <br/>
-            <span> <strong>University</strong>:</span> 
-
-            <span> 
+           <span v-if="'HERO_:DepartmentName' in professor_data"> <strong>Department</strong>: {{ professor_data["HERO_:DepartmentName"][0]["@value"] }} </span> <br/>
+            <span v-if="'HERO_:University' in professor_data"> <strong>University</strong>:
                 <router-link :to="{name: 'hbrowser', params: {type: 'institution', id: professor_data['HERO_:University'][0]['value_resource_id']}}">
-                    {{ professor_data["HERO_:University"][0]["display_title"] }} 
+                    {{ professor_data["HERO_:University"][0]["display_title"] }}
                 </router-link>
             </span> <br/>
-            
-            <span> <strong>Teacher Rank</strong>: </span>
-            <ul>
-                <li v-for="rank in professor_data['HERO_:TeacherRank']"> 
-                    {{ rank["@value"] }}  
-                </li>
-            </ul> 
-            
-            <span> <strong>Homepage Url</strong>: <a :href="professor_data['HERO_:TeacherHomePageURL'][0]['@id']">{{ professor_data["HERO_:TeacherHomePageURL"][0]["@id"] }}</a></span><br/>
+
+            <span v-if="'HERO_:College' in professor_data"> <strong>College</strong>:
+                <router-link :to="{name: 'hbrowser', params: {type: 'institution', id: professor_data['HERO_:College'][0]['value_resource_id']}}">
+                    {{ professor_data["HERO_:College"][0]["display_title"] }}
+                </router-link>
+            </span> <br/>
+
+            <span v-if="'HERO_:TeacherRank' in professor_data"> <strong>Teacher Rank</strong>:
+                <ul>
+                    <li v-for="rank in professor_data['HERO_:TeacherRank']">
+                        {{ rank["@value"] }}
+                    </li>
+                </ul>
+            </span>
+
+            <span v-if="'HERO_:TeacherHomePageURL' in professor_data"> <strong>Homepage Url</strong>: <a :href="professor_data['HERO_:TeacherHomePageURL'][0]['@id']">{{ professor_data["HERO_:TeacherHomePageURL"][0]["@id"] }}</a></span><br/>
             <br/><br/>
 
             <h5> Courses Taught: </h5>

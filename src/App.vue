@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <b-container>
-            <transition name="fade">
+            <transition name="">
                 <router-view />
             </transition>
         </b-container>
@@ -26,11 +26,11 @@ export default {
 
 .fade-enter-active, .fade-leave-active {
     transition-property: opacity;
-    transition-duration: .10s;
+    transition-duration: .05s;
 }
 
 .fade-enter-active {
-    transition-delay: .10s;
+    transition-delay: .05s;
 }
 
 .fade-enter, .fade-leave-active {

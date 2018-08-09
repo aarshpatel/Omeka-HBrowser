@@ -1,17 +1,26 @@
 <template>
     <div>
-        <b-input-group>
-            <h2 id="headline"> Omeka Hierarchical Browser </h2>
-            <b-form-input id="search-box" type="text" placeholder="Enter Search Query" v-model="search_query"></b-form-input>
-        </b-input-group>
+        <b-row>
+            <b-col cols="5">
+                <h2 id="headline"> Omeka Hierarchical Browser </h2>
+            </b-col>
+            <b-col cols="7">
+                <b-input-group>
+                    <b-input-group-text slot="append">
+                        <icon name="search" scale="1"></icon>
+                    </b-input-group-text>
+                    <b-form-input id="search-box" type="text" placeholder="Enter Search Query" v-model="search_query"></b-form-input>
+                </b-input-group>
+            </b-col>
+        </b-row>
 
         <div id="search-results" v-if="search_query">
             <b-list-group>
                 <b-list-group-item v-for="result in filteredSearchResults">
                     <router-link :to="{name: 'hbrowser', params: {type: resource_type[result['o:resource_template']['o:id']], id: result['o:id']}}">
-                        <icon name="user" scale=".9" v-if="resource_type[result['o:resource_template']['o:id']] == 'professor'"></icon> 
-                        <icon name="file" scale=".9" v-if="resource_type[result['o:resource_template']['o:id']] == 'course_leaf'"></icon> 
-                        <icon name="chalkboard" scale=".9" v-if="resource_type[result['o:resource_template']['o:id']] == 'course'"></icon> 
+                        <icon name="user" scale=".9" v-if="resource_type[result['o:resource_template']['o:id']] == 'professor'"></icon>
+                        <icon name="file" scale=".9" v-if="resource_type[result['o:resource_template']['o:id']] == 'course_leaf'"></icon>
+                        <icon name="chalkboard" scale=".9" v-if="resource_type[result['o:resource_template']['o:id']] == 'course'"></icon>
                         {{ result["dcterms:title"][0]["@value"] }}
                     </router-link>
                 </b-list-group-item>
@@ -57,7 +66,6 @@ export default {
                 var resource_template_keys = Object.keys(this.resource_templates).map(Number);
                 if(result["o:resource_template"] !== null) {
                     var resource_class = result["o:resource_template"]["o:id"];
-
                     if (resource_template_keys.includes(resource_class)) {
                         if("dcterms:title" in result && result["dcterms:title"][0]["@value"].toLowerCase().includes(this.search_query.toLowerCase())) {
                             return true;
@@ -99,6 +107,11 @@ li {
 }
 
 #search-box {
-    border-radius: 5px;
+    /* border-radius: 5px; */
 }
+
+svg {
+    margin-right: 10px;
+}
+
 </style>
