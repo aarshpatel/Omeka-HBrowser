@@ -145,5 +145,9 @@ export default {
 </script>
 
 <style scoped>
+a {
+    color: #0091ff;
+}
+
 </style>
 

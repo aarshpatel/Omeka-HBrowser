@@ -84,13 +84,14 @@ export default {
 
 <style scoped>
 #sidebar {
-    border-right: 1px solid #0000001c;
+    border-right: 1px solid #0091ff42;
+    text-align: left;
 }
 
 #headline {
     text-align: left;
     margin-bottom: 40px;
-    border-bottom: .5px solid #0000000d;
+    border-bottom: 1px solid #0091ff42;
 }
 </style>
 
