@@ -1,37 +1,17 @@
 <template>
     <div>
-        <b-row>
-            <b-col cols="7">
-                <h2 id="headline"> Omeka Hierarchical Browser </h2>
-            </b-col>
-            <b-col cols="2"></b-col>
-            <b-col cols="3">
-                <b-button size="sm" variant="primary" :to="{ name: 'search' }"> <icon name="search" scale=".9"></icon> Search Again</b-button>
-            </b-col>
-        </b-row>
-
-        <b-row>
-            <b-col id="sidebar" cols="6">
-                <sidebar></sidebar>
-            </b-col>
-
-            <b-col cols="6">
-                <div v-if="$route.params.type == 'course'">
-                    <course v-bind:course_data="getCurrentItem"></course>
-                </div>
-                <div v-if="$route.params.type == 'professor'">
-                    <professor v-bind:professor_data="getCurrentItem" ></professor>
-                </div>
-                <div v-if="$route.params.type == 'course_leaf'">
-                    <courseleaf v-bind:course_leaf_data="getCurrentItem" ></courseleaf>
-                </div>
-                <div v-if="$route.params.type == 'institution'">
-                    <institution v-bind:institution_data="getCurrentItem" ></institution>
-                </div>
-            </b-col>
-
-        </b-row>
-
+        <div v-if="getRouteType == 'course'">
+            <course v-bind:course_data="getCurrentItem"></course>
+        </div>
+        <div v-if="getRouteType == 'professor'">
+            <professor v-bind:professor_data="getCurrentItem" ></professor>
+        </div>
+        <div v-if="getRouteType == 'course_leaf'">
+            <courseleaf v-bind:course_leaf_data="getCurrentItem" ></courseleaf>
+        </div>
+        <div v-if="getRouteType == 'institution'">
+            <institution v-bind:institution_data="getCurrentItem" ></institution>
+        </div>
     </div>
 </template>
 
@@ -68,14 +48,28 @@ export default {
             'resource_type'
         ]),
         getCurrentItem(){
+            console.log(this.$route.query);
+            var item_id = null;
+            if(this.$route.query.leaf) item_id = Number(this.$route.query.leaf.replace("/", ""))
+            else if(this.$route.query.course) item_id = Number(this.$route.query.course.replace("/", ""))
+            else if(this.$route.query.prof) item_id = Number(this.$route.query.prof.replace("/", ""))
+            else if(this.$route.query.inst) item_id = Number(this.$route.query.inst.replace("/", ""))
+
             var currentItem = null;
             for(var idx in this.all_items) {
-                if(Number(this.all_items[idx]["o:id"]) == Number(this.$route.params.id)) {
+                if(Number(this.all_items[idx]["o:id"]) == item_id) {
                     currentItem = this.all_items[idx];
                     break;
                 }
             }
             return currentItem;
+        },
+        getRouteType() {
+            var type = "institution"
+            if(this.$route.query.leaf) type = "course_leaf"
+            else if(this.$route.query.course) type = "course"
+            else if(this.$route.query.prof) type = "professor"
+            return type;
         }
     }
 }
@@ -86,7 +80,6 @@ export default {
 #sidebar {
     border-right: 1px solid #0091ff42;
     text-align: left;
-    font-size: 14px;
 }
 
 #headline {

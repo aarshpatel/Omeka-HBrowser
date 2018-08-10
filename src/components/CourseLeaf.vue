@@ -6,7 +6,7 @@
             <span>
                 <icon name="chalkboard" scale=".8"></icon>
                 <strong>Course</strong>:
-                <router-link :to="{name: 'hbrowser', params: {type: 'course', id: course_leaf_data['HERO_:CourseTitle'][0]['value_resource_id']}}">
+                <router-link :to="{name: 'hbrowser', query: {'course': String(course_leaf_data['HERO_:CourseTitle'][0]['value_resource_id'])}}">
                 {{ course_leaf_data["HERO_:CourseTitle"][0]["display_title"] }}
                 </router-link>
             </span>

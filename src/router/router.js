@@ -6,7 +6,7 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 export default new VueRouter({
-    mode: 'history',
+    mode: 'hash',
     routes: [
         {
             name: 'search',
@@ -15,8 +15,8 @@ export default new VueRouter({
         },
         {
             name: 'hbrowser',
-            path: '/hbrowser/:type/:id',
-            component: HBrowser
+            path: '/hbrowser',
+            component: Search,
         }
     ]
 });

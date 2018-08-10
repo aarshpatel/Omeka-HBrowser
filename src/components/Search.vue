@@ -1,31 +1,46 @@
 <template>
     <div>
-        <b-row>
-            <b-col cols="5">
-                <h2 id="headline"> Omeka Hierarchical Browser </h2>
-            </b-col>
-            <b-col cols="7">
-                <b-input-group>
-                    <b-input-group-text slot="append">
-                        <icon name="search" scale="1"></icon>
-                    </b-input-group-text>
-                    <b-form-input id="search-box" type="text" placeholder="Enter Search Query" v-model="search_query"></b-form-input>
-                </b-input-group>
-            </b-col>
-        </b-row>
+            <b-row>
+                <b-col cols="5">
+                    <a href="/">
+                        <h2 id="headline"> Omeka Hierarchical Browser </h2>
+                    </a>
+                </b-col>
+                <b-col cols="7">
+                    <b-input-group>
+                        <b-form-input id="search-box" type="text" placeholder="Enter Search Query" v-model="search_query"></b-form-input>
+                        <b-button variant="primary" id="search-button">Search</b-button>
+                    </b-input-group>
+                </b-col>
+            </b-row>
 
-        <div id="search-results" v-if="search_query">
-            <b-list-group>
-                <b-list-group-item v-for="result in filteredSearchResults">
-                    <router-link :to="{name: 'hbrowser', params: {type: resource_type[result['o:resource_template']['o:id']], id: result['o:id']}}">
-                        <icon name="user" scale=".9" v-if="resource_type[result['o:resource_template']['o:id']] == 'professor'"></icon>
-                        <icon name="file" scale=".9" v-if="resource_type[result['o:resource_template']['o:id']] == 'course_leaf'"></icon>
-                        <icon name="chalkboard" scale=".9" v-if="resource_type[result['o:resource_template']['o:id']] == 'course'"></icon>
-                        {{ result["dcterms:title"][0]["@value"] }}
-                    </router-link>
-                </b-list-group-item>
-            </b-list-group>
-        </div>
+        <b-row id="content">
+            <b-col id="sidebar" cols="5">
+                <Sidebar></Sidebar>
+            </b-col>
+
+            <b-col cols="7">
+
+                <div id="hbrowser-view" v-if="$route.name == 'hbrowser'">
+                    <HBrowser></HBrowser>
+                </div>
+
+                <div id="search-results" v-if="$route.name == 'search' && search_query">
+                    <b-list-group>
+                        <b-list-group-item v-for="result in filteredSearchResults">
+                            <router-link :to="{name: 'hbrowser', query: { [resource_type[result['o:resource_template']['o:id']]] : String(result['o:id']) }}">
+                                <icon name="user" scale=".9" v-if="resource_type[result['o:resource_template']['o:id']] == 'prof'"></icon>
+                                <icon name="file" scale=".9" v-if="resource_type[result['o:resource_template']['o:id']] == 'leaf'"></icon>
+                                <icon name="chalkboard" scale=".9" v-if="resource_type[result['o:resource_template']['o:id']] == 'course'"></icon>
+                                {{ result["dcterms:title"][0]["@value"] }}
+                            </router-link>
+                        </b-list-group-item>
+                    </b-list-group>
+                </div>
+
+            </b-col>
+
+        </b-row>
     </div>
 </template>
 
@@ -33,7 +48,8 @@
 <script>
 import {mapGetters, mapState} from 'vuex'
 import Icon from 'vue-awesome/components/Icon'
-
+import Sidebar from './Sidebar.vue'
+import HBrowser from './HBrowser.vue'
 
 export default {
     name: "Search",
@@ -48,7 +64,7 @@ export default {
         }
     }),
     components: {
-        Icon
+        Icon, Sidebar, HBrowser
     },
     mounted() {
         this.$store.dispatch('loadAllItems') // call the loadAllItems action in the Vuex Store
@@ -99,8 +115,22 @@ export default {
 </script>
 
 <style scoped>
-#headline {
+#headline, #sidebar {
     margin-right: 20px;
+}
+
+#headline {
+    color: black;
+}
+
+#sidebar {
+    text-align: left;
+    margin-right: 0px;
+    padding: 0px;
+}
+
+#content {
+    margin-top: 20px;
 }
 
 #submit-query {
@@ -116,12 +146,17 @@ li {
     text-align: left;
 }
 
+
 #search-box {
-    /* border-radius: 5px; */
+    border-radius: 5px;
 }
 
 svg {
     margin-right: 10px;
+}
+
+#search-button {
+    margin-left: 10px;
 }
 
 </style>

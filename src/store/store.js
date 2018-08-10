@@ -10,11 +10,11 @@ export default new Vuex.Store({
         all_items: [],
         resource_type: {
             5: "course",
-            6: "professor",
-            2: "course_leaf",
-            3: "course_leaf",
-            9: "course_leaf",
-            7: "course_leaf"
+            6: "prof",
+            2: "leaf",
+            3: "leaf",
+            9: "leaf",
+            7: "leaf"
         },
         search_query: ""
     },

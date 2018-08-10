@@ -27,7 +27,7 @@ export default {
             }).reduce((courses,course) => {
                 var all_departments = [];
                 for(var idx in course["HERO_:DepartmentName"]) {
-                    all_departments.push({"name": course["HERO_:DepartmentName"][idx]["@value"], route: "hbrowser/university/10/department/id/", children: this.findProfessorInDepartment(course["HERO_:DepartmentName"][idx]["@value"], institution)});
+                    all_departments.push({"name": course["HERO_:DepartmentName"][idx]["@value"], children: this.findProfessorInDepartment(course["HERO_:DepartmentName"][idx]["@value"], institution)});
                 }
                 return courses.concat(all_departments);
             }, []);
@@ -55,7 +55,7 @@ export default {
                 }
                 return false;
             }).map(professor => {
-                return {"name": professor["dcterms:title"][0]["@value"], "id": professor["o:id"], "route": "hbrowser/professor/" + String(professor["o:id"]), children: this.findCoursesTaughtByProfessor(professor["o:id"], department_name, institution)}
+                return {"name": professor["dcterms:title"][0]["@value"], "id": professor["o:id"], "route": "&prof=" + String(professor["o:id"]), children: this.findCoursesTaughtByProfessor(professor["o:id"], department_name, institution)}
             });
 
             return this.sortByName(professors);
@@ -82,7 +82,7 @@ export default {
                 }
                 return false;
             }).map(course => {
-                return {"name": course["dcterms:title"][0]["@value"], "id": course["o:id"], "route": "hbrowser/course/" + String(course["o:id"]), children: this.findCourseLeafItems(course["o:id"])}
+                return {"name": course["dcterms:title"][0]["@value"], "id": course["o:id"], "route": "&course=" + String(course["o:id"]), children: this.findCourseLeafItems(course["o:id"])}
             });
 
             return this.sortByName(courses);
@@ -97,7 +97,7 @@ export default {
                 }
                 return false
             }).map(leaf_item => {
-                return {"name": leaf_item["dcterms:title"][0]["@value"], "id": leaf_item["o:id"], "route": "hbrowser/course_leaf/" + String(leaf_item["o:id"])}
+                return {"name": leaf_item["dcterms:title"][0]["@value"], "id": leaf_item["o:id"], "route": "&leaf=" + String(leaf_item["o:id"])}
             });
         },
         sortByName(items) {
@@ -145,7 +145,7 @@ export default {
             hierarchy() {
                 // this method will build the hbrowser hierarchy for the sidebar
                 var tree =  this.getAllInstitutions.map(element => {
-                    return {"name": element["dcterms:title"][0]["@value"], "id": element["o:id"], "route": "hbrowser/institution/" + String(element["o:id"]), children: this.findDepartmentsInInstition(element["o:id"])}
+                    return {"name": element["dcterms:title"][0]["@value"], "id": element["o:id"], "route": "hbrowser?inst=" + String(element["o:id"]), children: this.findDepartmentsInInstition(element["o:id"])}
                 });
 
                 tree = this.sortByName(tree); // sort the institutions by name

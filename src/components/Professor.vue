@@ -6,44 +6,50 @@
             <span v-if="'HERO_:DepartmentName' in professor_data">
                 <icon name="hashtag" scale=".8"></icon>
                 <strong>Department</strong>:
-                {{ professor_data["HERO_:DepartmentName"][0]["@value"] }}
-            </span> <br/>
+                <ol>
+                    <li v-for="dep in professor_data['HERO_:DepartmentName']">
+                        {{ dep["@value"] }}
+                    </li>
+                </ol>
+            </span>
 
             <span v-if="'HERO_:University' in professor_data">
                 <icon name="university" scale=".8"></icon>
                 <strong>University</strong>:
-                <router-link :to="{name: 'hbrowser', params: {type: 'institution', id: professor_data['HERO_:University'][0]['value_resource_id']}}">
+                <router-link :to="{name: 'hbrowser', query: {'inst': String(professor_data['HERO_:University'][0]['value_resource_id'])}}">
                     {{ professor_data["HERO_:University"][0]["display_title"] }}
                 </router-link>
-            </span> <br/>
+            </span><br/>
 
             <span v-if="'HERO_:College' in professor_data">
                 <icon name="university" scale=".8"></icon>
                 <strong>College</strong>:
-                <router-link :to="{name: 'hbrowser', params: {type: 'institution', id: professor_data['HERO_:College'][0]['value_resource_id']}}">
+                <router-link :to="{name: 'hbrowser', query: {'inst': professor_data['HERO_:College'][0]['value_resource_id']}}">
                     {{ professor_data["HERO_:College"][0]["display_title"] }}
                 </router-link>
-            </span> <br/>
+            </span><br/>
 
-            <span v-if="'HERO_:TeacherRank' in professor_data"> <strong>Teacher Rank</strong>:
+            <span v-if="'HERO_:TeacherRank' in professor_data">
+                <icon name="apple-alt" scale=".8"></icon>
+                <strong>Teacher Rank</strong>:
                 <ol>
                     <li v-for="rank in professor_data['HERO_:TeacherRank']">
                         {{ rank["@value"] }}
                     </li>
                 </ol>
-            </span>
+            </span> <br/>
 
             <span v-if="'HERO_:TeacherHomePageURL' in professor_data">
                 <icon name="home" scale=".8"></icon>
                 <strong>Homepage Url</strong>:
                 <a :href="professor_data['HERO_:TeacherHomePageURL'][0]['@id']">{{ professor_data["HERO_:TeacherHomePageURL"][0]["@id"] }}</a>
             </span><br/>
-            <br/><br/>
+            <br/>
 
             <span> <icon name="chalkboard" scale=".8"></icon> <strong>Courses Taught</strong>: </span>
             <ol>
                 <li v-for="course in courses_taught_by_professor">
-                    <router-link :to="{name: 'hbrowser', params: {type: 'course', id: course['o:id']}}">
+                    <router-link :to="{name: 'hbrowser', query: {'course': String(course['o:id'])}}">
                         {{course["dcterms:title"][0]["@value"]}}
                     </router-link>
                 </li>

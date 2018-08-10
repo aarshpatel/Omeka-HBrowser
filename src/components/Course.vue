@@ -21,7 +21,7 @@
                 <strong>University</strong>:
                 <ol>
                     <li v-for="university in course_data['HERO_:University']">
-                        <router-link :to="{name: 'hbrowser', params: {type: 'institution', id: university['value_resource_id']}}">
+                        <router-link :to="{name: 'hbrowser', query: {'inst': String(university['value_resource_id'])}}">
                             {{ university["display_title"] }}
                         </router-link>
                     </li>
@@ -33,7 +33,7 @@
                 <strong>College</strong>:
                 <ol>
                     <li v-for="college in course_data['HERO_:College']">
-                        <router-link :to="{name: 'hbrowser', params: {type: 'institution', id: college['value_resource_id']}}">
+                        <router-link :to="{name: 'hbrowser', query: {'inst': String(college['value_resource_id'])}}">
                             {{ college["display_title"] }}
                         </router-link>
                     </li>
@@ -45,7 +45,7 @@
                 <strong>Professors</strong>:
                 <ol>
                     <li v-for="professor in course_data['gvp:ulan2675_professor_was']">
-                        <router-link :to="{name: 'hbrowser', params: {type: 'professor', id: professor['value_resource_id']}}">
+                        <router-link :to="{name: 'hbrowser', query: {'prof': String(professor['value_resource_id'])}}">
                             {{ professor["display_title"] }}
                         </router-link>
                     </li>
@@ -57,7 +57,7 @@
                 <strong>Course Leaf Items</strong>:
                 <ol>
                     <li v-for="courseLeaf in courseLeafItems">
-                        <router-link :to="{name: 'hbrowser', params: {type: 'course_leaf', id: courseLeaf['id']}}">
+                        <router-link :to="{name: 'hbrowser', query: {'leaf': String(courseLeaf['id'])}}">
                             {{courseLeaf["name"]}}
                         </router-link>
                     </li>
