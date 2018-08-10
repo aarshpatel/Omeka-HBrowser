@@ -16,7 +16,6 @@
                     <strong>Department</strong>: {{ course_data["HERO_:DepartmentName"][0]["@value"] }}
             </span> <br/>
 
-
             <span v-if="'HERO_:University' in course_data">
                 <icon name="university" scale=".8"></icon>
                 <strong>University</strong>:

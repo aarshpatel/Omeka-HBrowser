@@ -10,17 +10,6 @@ import {mapState} from 'vuex'
 export default {
     name: "Sidebar",
     data: () => ({
-        items: [
-              { name: 'Blended Learning' },              // /products
-              { name: 'Universities', children: [          // /about
-                { name: 'UMass Amherst', children: [    // /about/contact
-                  { name: 'Christopher White', route: 'hbrowser/professor/58', children: [
-                      {name: 'Fundamentals of Music Theory', route: '/hbrowser/course/202'}
-                  ]},               // /about/contact/email
-                  { name: 'Eric Poehler', route: 'hbrowser/professor/60' },                // /about/contact/phone
-                ]},
-              ]},
-        ],
     }),
     methods: {
         // TODO: make sure the hierarchy path is falls through (for example: Art should only contain professors in Umass Amherst in the art department there. It shouldn't contain all professors in the art department across the database)
@@ -39,9 +28,8 @@ export default {
                 return {"name": course["HERO_:DepartmentName"][0]["@value"], children: this.findProfessorInDepartment(course["HERO_:DepartmentName"][0]["@value"])}
             });
 
-            var sortedDeps = this.sortByName(deps);
-            var removedDuplicateItems = this.removeDuplicateItems(sortedDeps);
-            console.log(removedDuplicateItems);
+            var sortedDeps = this.sortByName(deps); // sort the departments in the institution by name
+            var removedDuplicateItems = this.removeDuplicateItems(sortedDeps); // removed duplicate departments in the institution
             return removedDuplicateItems;
         },
 
@@ -77,12 +65,12 @@ export default {
 
         findCourseLeafItems(course) {
             return this.all_items.filter(result => {
-               if("HERO_:CourseTitle" in result) {
-                   if(Number(result["HERO_:CourseTitle"][0]["value_resource_id"]) == course) {
-                       return true
-                   }
-               }
-               return false
+                if("HERO_:CourseTitle" in result) {
+                    if(Number(result["HERO_:CourseTitle"][0]["value_resource_id"]) == course) {
+                        return true
+                    }
+                }
+                return false
             }).map(leaf_item => {
                 return {"name": leaf_item["dcterms:title"][0]["@value"], "id": leaf_item["o:id"], "route": "hbrowser/course_leaf/" + String(leaf_item["o:id"])}
             });
@@ -113,32 +101,32 @@ export default {
         ...mapState([
             'all_items'
         ]),
-        getAllInstitutions() {
-            return this.all_items.filter(element => {
-               if(element["o:item_set"].length > 0) {
-                   console.log(element);
-                    if(element["o:item_set"][0]["o:id"] == 7) {
-                        return true;
+            getAllInstitutions() {
+                return this.all_items.filter(element => {
+                    if(element["o:item_set"].length > 0) {
+                        console.log(element);
+                        if(element["o:item_set"][0]["o:id"] == 7) {
+                            return true;
+                        }
                     }
-                }
-                return false;
-            });
-        },
-        hierarchy() {
-            // this method will build the hbrowser hierarchy for the sidebar
-            var institutions =  this.getAllInstitutions.map(element => {
-                return {"name": element["dcterms:title"][0]["@value"], "id": element["o:id"], "route": "hbrowser/institution/" + String(element["o:id"])}
-            });
+                    return false;
+                });
+            },
+            hierarchy() {
+                // this method will build the hbrowser hierarchy for the sidebar
+                var institutions =  this.getAllInstitutions.map(element => {
+                    return {"name": element["dcterms:title"][0]["@value"], "id": element["o:id"], "route": "hbrowser/institution/" + String(element["o:id"])}
+                });
 
-            var institutions_with_professors = institutions.map(element => {
-                var o = Object.assign({}, element);
-                o.children = [{"name": "Departments", "children": this.findDepartmentsInInstition(element["id"])}];
-                return o;
-            });
+                var institutions_with_professors = institutions.map(element => {
+                    var o = Object.assign({}, element);
+                    o.children = [{"name": "Departments", "children": this.findDepartmentsInInstition(element["id"])}];
+                    return o;
+                });
 
 
-            return institutions_with_professors;
-        }
+                return institutions_with_professors;
+            }
     }
 }
 
@@ -148,6 +136,5 @@ export default {
 a {
     color: #0091ff;
 }
-
 </style>
 
