@@ -41,13 +41,13 @@
             <br/><br/>
 
             <span> <icon name="chalkboard" scale=".8"></icon> <strong>Courses Taught</strong>: </span>
-            <ul>
+            <ol>
                 <li v-for="course in courses_taught_by_professor">
                     <router-link :to="{name: 'hbrowser', params: {type: 'course', id: course['o:id']}}">
                         {{course["dcterms:title"][0]["@value"]}}
                     </router-link>
                 </li>
-            </ul>
+            </ol>
         </div>
     </div>
 </template>
@@ -95,10 +95,6 @@ export default {
 <style scoped>
 #professor-content {
     text-align: left;
-}
-
-li {
-    list-style-type: none;
 }
 
 svg {

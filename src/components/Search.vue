@@ -54,6 +54,15 @@ export default {
         this.$store.dispatch('loadAllItems') // call the loadAllItems action in the Vuex Store
     },
     methods: {
+        sortByTitle(items) {
+            return items.sort(function(a, b) {
+                var nameA = a["dcterms:title"][0]["@value"].toLowerCase();
+                var nameB = b["dcterms:title"][0]["@value"].toLowerCase();
+                if(nameA < nameB) return -1;
+                if(nameA > nameB) return 1;
+                return 0
+            });
+        }
     },
     computed: {
         ...mapState([
@@ -62,7 +71,7 @@ export default {
         ]),
         filteredSearchResults () {
             // filters for search results based on the query. Also we want to filter for only courses/professors/course leaf items
-            return this.all_items.filter(result => {
+            var results =  this.all_items.filter(result => {
                 var resource_template_keys = Object.keys(this.resource_templates).map(Number);
                 if(result["o:resource_template"] !== null) {
                     var resource_class = result["o:resource_template"]["o:id"];
@@ -74,6 +83,7 @@ export default {
                 }
                 else return false;
             });
+            return this.sortByTitle(results);
         },
         search_query: {
             get () {

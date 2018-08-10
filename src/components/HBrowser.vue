@@ -11,11 +11,11 @@
         </b-row>
 
         <b-row>
-            <b-col id="sidebar" cols="5">
+            <b-col id="sidebar" cols="6">
                 <sidebar></sidebar>
             </b-col>
 
-            <b-col cols="7">
+            <b-col cols="6">
                 <div v-if="$route.params.type == 'course'">
                     <course v-bind:course_data="getCurrentItem"></course>
                 </div>
@@ -86,6 +86,7 @@ export default {
 #sidebar {
     border-right: 1px solid #0091ff42;
     text-align: left;
+    font-size: 14px;
 }
 
 #headline {

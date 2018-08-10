@@ -24,36 +24,59 @@ export default {
                     }
                 }
                 return false;
-            }).map(course => {
-                return {"name": course["HERO_:DepartmentName"][0]["@value"], children: this.findProfessorInDepartment(course["HERO_:DepartmentName"][0]["@value"])}
-            });
+            }).reduce((courses,course) => {
+                var all_departments = [];
+                for(var idx in course["HERO_:DepartmentName"]) {
+                    all_departments.push({"name": course["HERO_:DepartmentName"][idx]["@value"], route: "hbrowser/university/10/department/id/", children: this.findProfessorInDepartment(course["HERO_:DepartmentName"][idx]["@value"], institution)});
+                }
+                return courses.concat(all_departments);
+            }, []);
 
             var sortedDeps = this.sortByName(deps); // sort the departments in the institution by name
             var removedDuplicateItems = this.removeDuplicateItems(sortedDeps); // removed duplicate departments in the institution
+            //console.log(removedDuplicateItems);
             return removedDuplicateItems;
         },
 
-        findProfessorInDepartment(department_name) {
-            return this.all_items.filter(element => {
+        findProfessorInDepartment(department_name, institution) {
+            var professors =  this.all_items.filter(element => {
                 if(element["o:resource_template"] !== null && element["o:resource_template"]["o:id"] == 6) {
-                    if("HERO_:DepartmentName" in element) {
-                        if(String(element["HERO_:DepartmentName"][0]["@value"]) == department_name) {
-                            return true;
+                    if("HERO_:University" in element || "HERO_:College" in element) {
+                        var institution_key = ("HERO_:University" in element) ? "HERO_:University" : "HERO_:College"
+                        if(Number(element[institution_key][0]["value_resource_id"]) == institution) {
+                            if("HERO_:DepartmentName" in element) {
+                                var departments = element["HERO_:DepartmentName"].map(dep => dep["@value"]);
+                                if(departments.includes(department_name)) {
+                                    return true;
+                                }
+                            }
                         }
                     }
                 }
                 return false;
             }).map(professor => {
-                return {"name": professor["dcterms:title"][0]["@value"], "id": professor["o:id"], "route": "hbrowser/professor/" + String(professor["o:id"]), children: this.findCoursesTaughtByProfessor(professor["o:id"])}
+                return {"name": professor["dcterms:title"][0]["@value"], "id": professor["o:id"], "route": "hbrowser/professor/" + String(professor["o:id"]), children: this.findCoursesTaughtByProfessor(professor["o:id"], department_name, institution)}
             });
+
+            return this.sortByName(professors);
         },
 
-        findCoursesTaughtByProfessor(professor) {
-            return this.all_items.filter(result => {
-                if(result["o:resource_template"] !== null) {
-                    if(Number(result["o:resource_template"]["o:id"]) == 5 && "gvp:ulan2675_professor_was" in result) {
-                        if(Number(result["gvp:ulan2675_professor_was"][0]["value_resource_id"]) == professor) {
-                            return true;
+        findCoursesTaughtByProfessor(professor, department_name, institution) {
+            var courses =  this.all_items.filter(element => {
+                if(element["o:resource_template"] !== null) {
+                    if("HERO_:University" in element || "HERO_:College" in element) {
+                        var institution_key = ("HERO_:University" in element) ? "HERO_:University" : "HERO_:College"
+                        if(Number(element[institution_key][0]["value_resource_id"]) == institution) {
+                            if("HERO_:DepartmentName" in element) {
+                                var departments = element["HERO_:DepartmentName"].map(dep => dep["@value"]);
+                                if(departments.includes(department_name)) {
+                                    if(Number(element["o:resource_template"]["o:id"]) == 5 && "gvp:ulan2675_professor_was" in element) {
+                                        if(Number(element["gvp:ulan2675_professor_was"][0]["value_resource_id"]) == professor) {
+                                            return true;
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -61,6 +84,8 @@ export default {
             }).map(course => {
                 return {"name": course["dcterms:title"][0]["@value"], "id": course["o:id"], "route": "hbrowser/course/" + String(course["o:id"]), children: this.findCourseLeafItems(course["o:id"])}
             });
+
+            return this.sortByName(courses);
         },
 
         findCourseLeafItems(course) {
@@ -95,6 +120,11 @@ export default {
                 }
             }
             return newItems;
+        },
+        normalize(text) {
+            var text = text.replace(/(\r\n\t|\n|\r\t)/gm,"");
+            //text = text.trim();
+            return text
         }
     },
     computed: {
@@ -114,18 +144,20 @@ export default {
             },
             hierarchy() {
                 // this method will build the hbrowser hierarchy for the sidebar
-                var institutions =  this.getAllInstitutions.map(element => {
-                    return {"name": element["dcterms:title"][0]["@value"], "id": element["o:id"], "route": "hbrowser/institution/" + String(element["o:id"])}
+                var tree =  this.getAllInstitutions.map(element => {
+                    return {"name": element["dcterms:title"][0]["@value"], "id": element["o:id"], "route": "hbrowser/institution/" + String(element["o:id"]), children: this.findDepartmentsInInstition(element["o:id"])}
                 });
 
-                var institutions_with_professors = institutions.map(element => {
-                    var o = Object.assign({}, element);
-                    o.children = [{"name": "Departments", "children": this.findDepartmentsInInstition(element["id"])}];
-                    return o;
-                });
+                tree = this.sortByName(tree); // sort the institutions by name
+
+                //var institutions_with_professors = institutions.map(element => {
+                //    var o = Object.assign({}, element);
+                 //   o.children = [{"name": "Departments", "children": this.findDepartmentsInInstition(element["id"])}];
+                  //  return o;
+               // });
 
 
-                return institutions_with_professors;
+                return tree;
             }
     }
 }

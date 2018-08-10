@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div id="course-contents">
+       <div id="course-contents">
             <h3> {{course_data["dcterms:title"][0]["@value"]}} </h3> <h3 v-if="'dcterms:date' in course_data"> ({{ course_data["dcterms:date"][0]["@value"] }}) </h3>
             <span v-if="'dcterms:description' in course_data">
                     {{ course_data["dcterms:description"][0]["@value"] }}
