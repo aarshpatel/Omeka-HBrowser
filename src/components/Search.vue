@@ -1,10 +1,7 @@
 <template>
     <div>
             <b-row>
-                <b-col cols="5">
-                    <a href="/">
-                        <h2 id="headline"> Omeka Hierarchical Browser </h2>
-                    </a>
+                <b-col cols="5"> <h2 id="headline">Omeka Hierarchical Browser</h2>
                 </b-col>
                 <b-col cols="7">
                     <b-input-group>

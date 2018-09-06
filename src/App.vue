@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <b-container>
-            <transition name="">
+            <transition>
                 <router-view />
             </transition>
         </b-container>
@@ -15,6 +15,7 @@ export default {
 </script>
 
 <style>
+
 #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -74,4 +75,5 @@ export default {
 .TreeNavigation {
     text-align: left;
 }
+
 </style>

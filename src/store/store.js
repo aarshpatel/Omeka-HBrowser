@@ -24,7 +24,7 @@ export default new Vuex.Store({
             this._vm.$http.get(all_items_rest_url).then(response => {
                 commit("SET_ITEMS", response.data)
             }).catch(error => {
-                console.log(error);
+                console.log('Error: ', error);
             });
         }
     },

@@ -1,5 +1,6 @@
 <template>
     <div>
+        <b-breadcrumb id="breadcrumb_path" :items="items"/>
         <div v-if="getRouteType == 'course'">
             <course v-bind:course_data="getCurrentItem"></course>
         </div>
@@ -37,6 +38,19 @@ export default {
         'Icon': Icon
     },
     data: () => ({
+        items: [{
+            text: 'University of Massachusetts Amherst',
+            href: '#/hbrowser?inst=12'
+        }, {
+            text: 'Music',
+        }, {
+            text: 'Christopher White',
+            href: '#/hbrowser?inst=12&dep=Music&prof=58'
+        },{
+            text: 'Fundamentals of Music Theory',
+            href: '#/hbrowser?inst=12&dep=Music&prof=58&course=202',
+            active: true
+        }]
     }),
     mounted() {
     },
@@ -48,7 +62,6 @@ export default {
             'resource_type'
         ]),
         getCurrentItem(){
-            console.log(this.$route.query);
             var item_id = null;
             if(this.$route.query.leaf) item_id = Number(this.$route.query.leaf.replace("/", ""))
             else if(this.$route.query.course) item_id = Number(this.$route.query.course.replace("/", ""))
@@ -87,5 +100,8 @@ export default {
     margin-bottom: 40px;
     border-bottom: 1px solid #0091ff42;
 }
-</style>
 
+#breadcrumb_path {
+    font-size: 14px;
+}
+</style>

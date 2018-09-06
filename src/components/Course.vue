@@ -2,6 +2,7 @@
     <div>
        <div id="course-contents">
             <h3> {{course_data["dcterms:title"][0]["@value"]}} </h3> <h3 v-if="'dcterms:date' in course_data"> ({{ course_data["dcterms:date"][0]["@value"] }}) </h3>
+
             <span v-if="'dcterms:description' in course_data">
                     {{ course_data["dcterms:description"][0]["@value"] }}
             </span> <br/><br/>
@@ -103,6 +104,38 @@ export default {
             }).map(leaf_item => {
                 return {"name": leaf_item["dcterms:title"][0]["@value"], "id": leaf_item["o:id"]}
             });
+        },
+        coursePath() {
+            // TODO: build the course path
+            var path = [{text: '', href: ''}, {text: '', href: ''}, {text: '', href: ''}, {text: '', href: ''}];
+
+            var inst_id = None
+            var dep_name = None
+            var prof_id = None
+
+            if("HERO_:University" in this.course_data || "HERO_:College" in this.course_data) {
+                const institution_key = ("HERO_:University" in this.course_data) ? "HERO_:University" : "HERO_:College";
+                path[0].href = '#/hbrowser?inst=' + this.course_data[institution_key][0]["value_resource_id"]
+                path[0].text = this.course_data[institution_key][0]["display_title"]
+                inst_id = this.course_data[institution_key][0]["value_resource_id"]
+            }
+
+            if("HERO_:DepartmentName" in this.course_data) {
+                dep_name = this.course_data["HERO_:DepartmentName"][0]["@value"]
+                path[1].text = dep_name
+            }
+
+            if("gvp:ulan2675_professor_was" in this.course_data) {
+                prof_id = this.course_data["gvp:ulan2675_professor_was"][0]["value_resource_id"]
+                path[2].text = this.course_data["gvp:ulan2675_professor_was"][0]["@value"]
+                path[2].href = "#/hbrowser?isnt=" + inst_id + "&dep=" + dep_name + "&prof=" + prof_id
+            }
+
+            path[3].text = this.course_data["dcterms:title"][0]["@value"]
+            path[3].href = path[2].href + "&course=" + this.course_data["o:id"]
+
+            return path;
+
         }
     }
 }

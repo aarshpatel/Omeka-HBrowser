@@ -85,9 +85,8 @@ export default {
             return this.all_items.filter(result => {
                 if(result["o:resource_template"] !== null) {
                     if(Number(result["o:resource_template"]["o:id"]) == 5 && "gvp:ulan2675_professor_was" in result) {
-                        if(Number(result["gvp:ulan2675_professor_was"][0]["value_resource_id"]) == Number(this.professor_data["o:id"])) {
-                            return true;
-                        }
+                        const professor_ids = result["gvp:ulan2675_professor_was"].map(obj => Number(obj["value_resource_id"])) // there could be multiple professors who teach the same course
+                        if(professor_ids.includes(Number(this.professor_data["o:id"]))) return true
                     }
                 }
                 return false;
